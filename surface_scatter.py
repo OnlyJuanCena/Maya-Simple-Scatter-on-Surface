@@ -1,3 +1,5 @@
+from gettext import translation
+
 import maya.cmds as cmds
 import maya.OpenMayaUI as omui
 from PySide6 import QtWidgets, QtCore
@@ -8,9 +10,24 @@ def get_maya_main_win():
     main_win_addr = omui.MQtUtil.mainWindow()
     wrapInstance(int(main_win_addr), QtWidgets.QWidget)
 
-# create mesh plane?
+# idea: create mesh plane?
 # divide mesh into points
-# get location of points and put into a list
+# get location of points and put into a dictionary
+def get_points():
+    selected_verts = cmds.ls(selection=True, flatten=True)
+    vert_positions = {}
+
+    for vert in selected_verts:
+        pos = cmds.xform(vert, query=True, worldSpace=True, translation=True)
+        vert_positions[vert] = pos
+
+    print(vert_positions)
+    
+	
+
 # create group of duplicate meshes and place on points
 	# use dictionaries to associate mesh with point
 # hide duplicate meshes at random based on density slider
+
+if __name__ == "__main__":
+    get_points()
