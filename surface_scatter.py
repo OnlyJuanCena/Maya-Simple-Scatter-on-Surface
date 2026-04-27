@@ -12,6 +12,10 @@ def get_maya_main_win():
 
 # idea: create mesh plane?
 # divide mesh into points
+
+# get scatterable objects in scene
+def get_objects():
+    objects = cmds.ls(geometry=True)
 # get location of points and put into a dictionary
 def get_points():
     selected_verts = cmds.ls(selection=True, flatten=True)
@@ -21,7 +25,7 @@ def get_points():
         pos = cmds.xform(vert, query=True, worldSpace=True, translation=True)
         vert_positions[vert] = pos
 
-    print(vert_positions)
+    print(vert_positions[vert])
     
 	
 
@@ -30,4 +34,5 @@ def get_points():
 # hide duplicate meshes at random based on density slider
 
 if __name__ == "__main__":
-    get_points()
+    print(cmds.ls(geometry=True))
+    # get_points()
