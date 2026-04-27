@@ -1,5 +1,3 @@
-from gettext import translation
-
 import maya.cmds as cmds
 import maya.OpenMayaUI as omui
 from PySide6 import QtWidgets, QtCore
@@ -13,19 +11,25 @@ def get_maya_main_win():
 # idea: create mesh plane?
 # divide mesh into points
 
-# get scatterable objects in scene
+# get objects in scene that can be scattered on
 def get_objects():
     objects = cmds.ls(geometry=True)
+    return objects[1]
+
 # get location of points and put into a dictionary
 def get_points():
-    selected_verts = cmds.ls(selection=True, flatten=True)
-    vert_positions = {}
 
+    selected_verts = cmds.ls(selection=True, flatten=True)
+
+    if len(cmds.ls(selection=True)) == 0:
+        print("You need to select an object or group first.")
+
+    vert_positions = {}
     for vert in selected_verts:
         pos = cmds.xform(vert, query=True, worldSpace=True, translation=True)
         vert_positions[vert] = pos
 
-    print(vert_positions[vert])
+    print(vert_positions)
     
 	
 
@@ -34,5 +38,5 @@ def get_points():
 # hide duplicate meshes at random based on density slider
 
 if __name__ == "__main__":
-    print(cmds.ls(geometry=True))
-    # get_points()
+    # get_objects()
+    get_points()
