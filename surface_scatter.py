@@ -9,7 +9,6 @@ def get_maya_main_win():
     main_win_addr = omui.MQtUtil.mainWindow()
     wrapInstance(int(main_win_addr), QtWidgets.QWidget)
 
-def get_objects
 
 class ScatterWin(QtWidgets.QDialog):
 
@@ -33,7 +32,7 @@ class ScatterWin(QtWidgets.QDialog):
 
     def _mk_combox_layout(self):
         self.obj_select_btn = QtWidgets.QComboBox()
-        self.obj_select_btn.addItems(self.)
+        self.obj_select_btn.addItems(self.scatter_handler.get_objects())
         self.main_layout.addWidget(self.obj_select_btn)
 
     def _mk_buttons_layout(self):
@@ -67,7 +66,8 @@ class SimpleScatter():
     def get_base_object(self):
         if self.selected_object == "":
             return self.get_objects[0]
-        else: return self.selected_object
+        else:
+            return self.selected_object
 
     def get_points(self):
         """Returns a list containing the positions of
@@ -93,7 +93,7 @@ class SimpleScatter():
         return vert_positions
 
     def _make_child(self, obj):
-        cmds.parent(obj, self.selected_object)
+        cmds.parent(obj, self.get_base_object())
 
     # create group of duplicate meshes and place on points
     # use dictionaries to associate mesh with point
