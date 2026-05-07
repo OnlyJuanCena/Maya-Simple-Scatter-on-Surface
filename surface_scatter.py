@@ -21,19 +21,22 @@ def get_objects():
 
 
 # get location of points and put into a dictionary
-# def get_points():
-#     object = get_objects()
-#     print(object)
-#     cmds.select(object.vtx[5:10])
+def get_points():
+    object = get_objects()
+    print(object)
+    cmds.select(object)
 
-#     selected_verts = cmds.polyListComponentConversion(object, toVertex=True)
+    selected_verts = cmds.polyListComponentConversion(object, toVertex=True)
+    print(selected_verts[0])
+    print(type(selected_verts[0]))
 
-#     vert_positions = {}
-#     for vert in selected_verts:
-#         pos = cmds.xform(vert, query=True, worldSpace=True, translation=True)
-#         vert_positions[vert] = pos
+    vert_positions = {}
+    for vert in selected_verts[0]:
+        pos = cmds.xform(vert, query=True, worldSpace=True, translation=True)
+        vert_positions[vert] = pos
 
-#     print(vert_positions)
+    # cmds.select(vert_positions[30])
+    # print(vert_positions[30])
 
 # create group of duplicate meshes and place on points
 # use dictionaries to associate mesh with point
@@ -41,5 +44,5 @@ def get_objects():
 
 
 if __name__ == "__main__":
-    get_objects()
-    # get_points()
+    # get_objects()
+    get_points()
