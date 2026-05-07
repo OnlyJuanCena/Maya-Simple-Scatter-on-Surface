@@ -14,19 +14,27 @@ class ScatterWin(QtWidgets.QDialog):
 
     def __init__(self):
         super().__init__(parent=get_maya_main_win())
-        self.building = SimpleScatter()
+        self.scatter_handler = SimpleScatter()
         self.setWindowTitle("Simple Scatter")
         self.setWindowFlags(QtCore.Qt.Tool)
         self._mk_main_layout()
         self._connect_signals()
 
     def _connect_signals(self):
-        self.scatter_cubes_btn.clicked.connect(self.building.scatter_cubes)
+        self.scatter_cubes_btn.clicked.connect(
+            self.scatter_handler.scatter_cubes)
 
     def _mk_main_layout(self):
         self.main_layout = QtWidgets.QVBoxLayout()
+        self._mk_combox_layout()
         self._mk_buttons_layout()
         self.setLayout(self.main_layout)
+
+    def _mk_combox_layout(self):
+        item_list = self.scatter_handler.get_objects()
+        self.obj_select_btn = QtWidgets.QComboBox()
+        self.obj_select_btn.addItems(item_list)
+        self.main_layout.addWidget(self.obj_select_btn)
 
     def _mk_buttons_layout(self):
         self.scatter_cubes_btn = QtWidgets.QPushButton("Scatter Cubes")
@@ -37,8 +45,6 @@ class SimpleScatter():
 
     object_number = 0
 
-    # idea: create mesh plane?
-
     def scatter_cubes(self):
         for pos in self.get_points():
             cube = cmds.polyCube(height=0.1, width=0.1, depth=0.1, name="cube")
@@ -46,7 +52,12 @@ class SimpleScatter():
 
     def get_objects(self):
         objects = cmds.ls(geometry=True)
-        selected_object = objects[self.object_number]
+        print(objects)
+        return objects
+
+    def select_object(self):
+        obj_list = self.get_objects()
+        selected_object = obj_list[self.object_number]
         return selected_object
 
     def get_points(self):
@@ -56,7 +67,8 @@ class SimpleScatter():
         Returns:
             list: Vertecies from object.
         """
-        obj = self.get_objects()
+
+        obj = self.select_object()
         object_verts = f"{obj}.vtx[*]"
 
         selected_verts = cmds.ls(object_verts, flatten=True)
