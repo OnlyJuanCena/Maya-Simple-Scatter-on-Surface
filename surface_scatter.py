@@ -9,6 +9,7 @@ def get_maya_main_win():
     main_win_addr = omui.MQtUtil.mainWindow()
     wrapInstance(int(main_win_addr), QtWidgets.QWidget)
 
+def get_objects
 
 class ScatterWin(QtWidgets.QDialog):
 
@@ -31,9 +32,8 @@ class ScatterWin(QtWidgets.QDialog):
         self.setLayout(self.main_layout)
 
     def _mk_combox_layout(self):
-        item_list = self.scatter_handler.get_objects()
         self.obj_select_btn = QtWidgets.QComboBox()
-        self.obj_select_btn.addItems(item_list)
+        self.obj_select_btn.addItems(self.)
         self.main_layout.addWidget(self.obj_select_btn)
 
     def _mk_buttons_layout(self):
@@ -43,6 +43,7 @@ class ScatterWin(QtWidgets.QDialog):
 
 class SimpleScatter():
 
+    obj_list = ""
     selected_object = ""
 
     def scatter_cubes(self):
@@ -62,6 +63,11 @@ class SimpleScatter():
     def get_objects(self):
         objects = cmds.ls(geometry=True)
         return objects
+
+    def get_base_object(self):
+        if self.selected_object == "":
+            return self.get_objects[0]
+        else: return self.selected_object
 
     def get_points(self):
         """Returns a list containing the positions of
