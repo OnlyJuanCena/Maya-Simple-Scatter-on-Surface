@@ -15,17 +15,22 @@ class ScatterWin(QtWidgets.QDialog):
     def __init__(self):
         super().__init__(parent=get_maya_main_win())
         self.building = SimpleScatter()
-        # self.resize(300, 200)
         self.setWindowTitle("Simple Scatter")
         self.setWindowFlags(QtCore.Qt.Tool)
         self._mk_main_layout()
         self._connect_signals()
 
     def _connect_signals(self):
-        pass
+        self.scatter_cubes_btn.clicked.connect(self.building.scatter_cubes)
 
     def _mk_main_layout(self):
-        pass
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self._mk_buttons_layout()
+        self.setLayout(self.main_layout)
+
+    def _mk_buttons_layout(self):
+        self.scatter_cubes_btn = QtWidgets.QPushButton("Scatter Cubes")
+        self.main_layout.addWidget(self.scatter_cubes_btn)
 
 
 class SimpleScatter():
@@ -33,6 +38,11 @@ class SimpleScatter():
     object_number = 0
 
     # idea: create mesh plane?
+
+    def scatter_cubes(self):
+        for pos in self.get_points():
+            cube = cmds.polyCube(height=0.1, width=0.1, depth=0.1, name="cube")
+            cmds.xform(cube, translation=pos)
 
     def get_objects(self):
         objects = cmds.ls(geometry=True)
@@ -70,8 +80,5 @@ class SimpleScatter():
 
 
 if __name__ == "__main__":
-    scatter = SimpleScatter()
-    print(scatter.get_points())
-    for pos in scatter.get_points():
-        cube = cmds.polyCube(height=0.01, width=0.01, depth=0.01, name="cube")
-        cmds.xform(cube, translation=pos)
+    w = ScatterWin()
+    w.show()
