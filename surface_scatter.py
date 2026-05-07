@@ -31,11 +31,15 @@ def get_points():
 
     vert_positions = {}
     for vert in selected_verts:
-        pos = cmds.xform(vert, query=True, worldSpace=True, translation=True)
+        pos = tuple(cmds.xform(vert,
+                               query=True,
+                               worldSpace=True,
+                               translation=True))
         vert_positions[vert] = pos
 
     # cmds.select(vert_positions[30])
-    # print(vert_positions[30])
+    print(vert_positions["pPlane1.vtx[37]"])
+    print(type(vert_positions["pPlane1.vtx[37]"]))
 
 # create group of duplicate meshes and place on points
 # use dictionaries to associate mesh with point
