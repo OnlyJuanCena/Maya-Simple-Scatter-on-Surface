@@ -16,22 +16,21 @@ def get_maya_main_win():
 # get objects in scene that can be scattered on
 def get_objects():
     objects = cmds.ls(geometry=True)
-    print(objects)
+    print(f"Selected objects = {objects}")
     return objects[0]
 
 
 # get location of points and put into a dictionary
 def get_points():
     object = get_objects()
-    print(object)
-    cmds.select(object)
+    object_verts = f"{object}.vtx[*]"
 
-    selected_verts = cmds.polyListComponentConversion(object, toVertex=True)
-    print(selected_verts[0])
-    print(type(selected_verts[0]))
+    selected_verts = cmds.ls(object_verts, flatten=True)
+    print(f"Object Verts = {selected_verts}")
+    print(f"Type = {type(selected_verts)}")
 
     vert_positions = {}
-    for vert in selected_verts[0]:
+    for vert in selected_verts:
         pos = cmds.xform(vert, query=True, worldSpace=True, translation=True)
         vert_positions[vert] = pos
 
