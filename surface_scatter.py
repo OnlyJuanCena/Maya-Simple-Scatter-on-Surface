@@ -10,6 +10,24 @@ def get_maya_main_win():
     wrapInstance(int(main_win_addr), QtWidgets.QWidget)
 
 
+class ScatterWin(QtWidgets.QDialog):
+
+    def __init__(self):
+        super().__init__(parent=get_maya_main_win())
+        self.building = SimpleScatter()
+        # self.resize(300, 200)
+        self.setWindowTitle("Simple Scatter")
+        self.setWindowFlags(QtCore.Qt.Tool)
+        self._mk_main_layout()
+        self._connect_signals()
+
+    def _connect_signals(self):
+        pass
+
+    def _mk_main_layout(self):
+        pass
+
+
 class SimpleScatter():
 
     object_number = 0
