@@ -12,14 +12,22 @@ def get_maya_main_win():
 
 class SimpleScatter():
 
+    object_number = 0
+
     # idea: create mesh plane?
 
     def get_objects(self):
         objects = cmds.ls(geometry=True)
-        selected_object = objects[0]
+        selected_object = objects[self.object_number]
         return selected_object
 
     def get_points(self):
+        """Returns a list containing the positions of
+        every point in the given object
+
+        Returns:
+            list: Vertecies from object.
+        """
         obj = self.get_objects()
         object_verts = f"{obj}.vtx[*]"
 
@@ -38,6 +46,9 @@ class SimpleScatter():
     # create group of duplicate meshes and place on points
     # use dictionaries to associate mesh with point
     # hide duplicate meshes at random based on density slider
+
+    # create group of hidden objects that slider controls
+    # allow user to delete hidden objects
 
 
 if __name__ == "__main__":
