@@ -43,7 +43,7 @@ class ScatterWin(QtWidgets.QDialog):
 
 class SimpleScatter():
 
-    object_number = 0
+    selected_object = ""
 
     def scatter_cubes(self):
         cube_names = []
@@ -57,17 +57,11 @@ class SimpleScatter():
             cube_names.append(cube)
 
         grp_name = cmds.group(cube_names, name="cubes")
-
         return grp_name
 
     def get_objects(self):
         objects = cmds.ls(geometry=True)
         return objects
-
-    def select_object(self):
-        obj_list = self.get_objects()
-        selected_object = obj_list[self.object_number]
-        return selected_object
 
     def get_points(self):
         """Returns a list containing the positions of
@@ -77,7 +71,7 @@ class SimpleScatter():
             list: Vertecies from object.
         """
 
-        obj = self.select_object()
+        obj = self.selected_object
         object_verts = f"{obj}.vtx[*]"
 
         selected_verts = cmds.ls(object_verts, flatten=True)
@@ -91,6 +85,9 @@ class SimpleScatter():
             vert_positions.append(pos)
 
         return vert_positions
+
+    def _make_child(self, obj):
+        cmds.parent(obj, self.selected_object)
 
     # create group of duplicate meshes and place on points
     # use dictionaries to associate mesh with point
