@@ -25,13 +25,13 @@ class SimpleScatter():
 
         selected_verts = cmds.ls(object_verts, flatten=True)
 
-        vert_positions = {}
+        vert_positions = []
         for vert in selected_verts:
             pos = tuple(cmds.xform(vert,
                                    query=True,
                                    worldSpace=True,
                                    translation=True))
-            vert_positions[vert] = pos
+            vert_positions.append(pos)
 
         return vert_positions
 
@@ -43,3 +43,6 @@ class SimpleScatter():
 if __name__ == "__main__":
     scatter = SimpleScatter()
     print(scatter.get_points())
+    for pos in scatter.get_points():
+        cube = cmds.polyCube(height=0.01, width=0.01, depth=0.01, name="cube")
+        cmds.xform(cube, translation=pos)
