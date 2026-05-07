@@ -46,13 +46,22 @@ class SimpleScatter():
     object_number = 0
 
     def scatter_cubes(self):
+        cube_names = []
+
         for pos in self.get_points():
-            cube = cmds.polyCube(height=0.1, width=0.1, depth=0.1, name="cube")
+            cube = cmds.polyCube(height=0.1,
+                                 width=0.1,
+                                 depth=0.1,
+                                 name="cube")[0]
             cmds.xform(cube, translation=pos)
+            cube_names.append(cube)
+
+        grp_name = cmds.group(cube_names, name="cubes")
+
+        return grp_name
 
     def get_objects(self):
         objects = cmds.ls(geometry=True)
-        print(objects)
         return objects
 
     def select_object(self):
