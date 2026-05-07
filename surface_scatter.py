@@ -95,6 +95,13 @@ class SimpleScatter():
     def _make_child(self, obj):
         cmds.parent(obj, self.get_base_object())
 
+    def _freeze_transforms(self, obj):
+        cmds.makeIdentity(obj, apply=True, translate=True, rotate=True,
+                          scale=True, normal=False, preserveNormals=True)
+
+    def _set_pivot_to_origin(self, obj):
+        cmds.xform(obj, pivots=[0, 0, 0])
+
     # create group of duplicate meshes and place on points
     # use dictionaries to associate mesh with point
     # hide duplicate meshes at random based on density slider
