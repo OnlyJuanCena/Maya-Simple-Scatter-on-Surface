@@ -10,24 +10,18 @@ def get_maya_main_win():
     wrapInstance(int(main_win_addr), QtWidgets.QWidget)
 
 # idea: create mesh plane?
-# divide mesh into points
 
 
-# get objects in scene that can be scattered on
 def get_objects():
     objects = cmds.ls(geometry=True)
-    print(f"Selected objects = {objects}")
     return objects[0]
 
 
-# get location of points and put into a dictionary
 def get_points():
     object = get_objects()
     object_verts = f"{object}.vtx[*]"
 
     selected_verts = cmds.ls(object_verts, flatten=True)
-    print(f"Object Verts = {selected_verts}")
-    print(f"Type = {type(selected_verts)}")
 
     vert_positions = {}
     for vert in selected_verts:
@@ -37,9 +31,7 @@ def get_points():
                                translation=True))
         vert_positions[vert] = pos
 
-    # cmds.select(vert_positions[30])
-    print(vert_positions["pPlane1.vtx[37]"])
-    print(type(vert_positions["pPlane1.vtx[37]"]))
+    return vert_positions
 
 # create group of duplicate meshes and place on points
 # use dictionaries to associate mesh with point
