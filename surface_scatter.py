@@ -14,7 +14,7 @@ class ScatterWin(QtWidgets.QDialog):
 
     def __init__(self):
         super().__init__(parent=get_maya_main_win())
-        self.scatter_handler = SimpleScatter()
+        self.scatter = SimpleScatter()
         self.setWindowTitle("Simple Scatter")
         self.setWindowFlags(QtCore.Qt.Tool)
         self._mk_main_layout()
@@ -22,7 +22,10 @@ class ScatterWin(QtWidgets.QDialog):
 
     def _connect_signals(self):
         self.scatter_cubes_btn.clicked.connect(
-            self.scatter_handler.scatter_cubes)
+            self.scatter.scatter_cubes)
+        self.obj_select_combox.currentTextChanged.connect(
+            self.scatter.base_object
+        )
 
     def _mk_main_layout(self):
         self.main_layout = QtWidgets.QVBoxLayout()
@@ -31,9 +34,9 @@ class ScatterWin(QtWidgets.QDialog):
         self.setLayout(self.main_layout)
 
     def _mk_combox_layout(self):
-        self.obj_select_btn = QtWidgets.QComboBox()
-        self.obj_select_btn.addItems(self.scatter_handler.get_objects())
-        self.main_layout.addWidget(self.obj_select_btn)
+        self.obj_select_combox = QtWidgets.QComboBox()
+        self.obj_select_combox.addItems(self.scatter.get_objects())
+        self.main_layout.addWidget(self.obj_select_combox)
 
     def _mk_buttons_layout(self):
         self.scatter_cubes_btn = QtWidgets.QPushButton("Scatter Cubes")
@@ -43,7 +46,7 @@ class ScatterWin(QtWidgets.QDialog):
 class SimpleScatter():
 
     obj_list = ""
-    selected_object = ""
+    base_object = ""
 
     def scatter_cubes(self):
         cube_names = []
@@ -57,6 +60,7 @@ class SimpleScatter():
             cube_names.append(cube)
 
         grp_name = cmds.group(cube_names, name="cubes")
+        self._make_child(grp_name)
         return grp_name
 
     def get_objects(self):
@@ -64,10 +68,10 @@ class SimpleScatter():
         return objects
 
     def get_base_object(self):
-        if self.selected_object == "":
-            return self.get_objects[0]
+        if self.base_object == "":
+            return self.get_objects()[0]
         else:
-            return self.selected_object
+            return self.base_object
 
     def get_points(self):
         """Returns a list containing the positions of
@@ -77,10 +81,13 @@ class SimpleScatter():
             list: Vertecies from object.
         """
 
-        obj = self.selected_object
-        object_verts = f"{obj}.vtx[*]"
+        self.base_object = self.get_base_object()
+        print(f"{self.base_object}")
+        object_verts = f"{self.base_object}.vtx[*]"
+        print(f"{object_verts}")
 
         selected_verts = cmds.ls(object_verts, flatten=True)
+        print(selected_verts)
 
         vert_positions = []
         for vert in selected_verts:
@@ -93,7 +100,7 @@ class SimpleScatter():
         return vert_positions
 
     def _make_child(self, obj):
-        cmds.parent(obj, self.get_base_object())
+        cmds.setParent(obj, self.get_base_object())
 
     def _freeze_transforms(self, obj):
         cmds.makeIdentity(obj, apply=True, translate=True, rotate=True,
