@@ -15,6 +15,7 @@ class ScatterWin(QtWidgets.QDialog):
     def __init__(self):
         super().__init__(parent=get_maya_main_win())
         self.scatter = SimpleScatter()
+        # put self.obj_list = get_objects here
         self.setWindowTitle("Simple Scatter")
         self.setWindowFlags(QtCore.Qt.Tool)
         self._mk_main_layout()
