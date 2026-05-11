@@ -45,12 +45,21 @@ class ScatterWin(QtWidgets.QDialog):
         self.setLayout(self.main_layout)
 
     def _mk_combox_layout(self):
+        self.combox_layout = QtWidgets.QHBoxLayout()
         self.obj_select_combox = QtWidgets.QComboBox()
         self.obj_select_combox.addItems(self.scatter.obj_list)
 
         self.refresh_list_btn = QtWidgets.QPushButton("Refresh List")
-        self.main_layout.addWidget(self.obj_select_combox)
-        self.main_layout.addWidget(self.refresh_list_btn)
+        self.combox_layout.addWidget(self.obj_select_combox)
+        self.combox_layout.addWidget(self.refresh_list_btn)
+        self.main_layout.addLayout(self.combox_layout)
+
+    def _mk_density_layout(self):
+        self.density_slider = QtWidgets.QSlider()
+        self.density_slider_lbl = QtWidgets.QLabel("Density")
+        self.density_slider.setMaximum(1)
+        self.density_slider.setMinimum(0)
+        self.density_slider.setSingleStep(0.01)
 
     def _mk_buttons_layout(self):
         self.scatter_cubes_btn = QtWidgets.QPushButton("Scatter Cubes")
@@ -62,8 +71,8 @@ class SimpleScatter():
     obj_list = ""
     base_object = ""
     random_placement = True
-    random_mult = 70
-    random_density = None
+    random_density = 0.25
+    hidden_list = []
 
     def scatter_cubes(self):
         cube_names = []
@@ -76,20 +85,27 @@ class SimpleScatter():
             cmds.xform(cube, translation=pos)
             cube_names.append(cube)
 
-        grp_name = cmds.group(cube_names, name="cubes")
+        self.apply_random_visibility(cube_names)
 
-        for cube in grp_name:
-            self.apply_random_visibility(cube)
+        grp_name = cmds.group(cube_names, name="cubes")
 
         self._make_child(grp_name)
         return grp_name
 
-    def apply_random_visibility(self, obj):
-        hidden_obj = []
+    def apply_random_visibility(self, objects):
         if self.random_placement is True:
-            if random.randint(1, 100) <= self.random_mult:
+            density = self.random_density
+
+            hidden_count = round(len(objects) * density)
+            hidden_count = max(0, min(hidden_count, len(objects)))
+
+            self.hidden_list = (
+                random.sample(objects, hidden_count)
+                if hidden_count else []
+            )
+
+            for obj in self.hidden_list:
                 cmds.hide(obj)
-                hidden_obj.append(obj)
 
     def get_objects(self):
         objects = cmds.ls(geometry=True)
