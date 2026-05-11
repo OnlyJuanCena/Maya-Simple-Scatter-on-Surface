@@ -66,18 +66,20 @@ class SimpleScatter():
 
     def scatter_cubes(self):
         cube_names = []
+        hidden_cubes = []
 
         for pos in self.get_points():
-            # chance of object not generating
+            cube = cmds.polyCube(height=0.1,
+                                 width=0.1,
+                                 depth=0.1,
+                                 name="cube")[0]
+            cmds.xform(cube, translation=pos)
+            cube_names.append(cube)
+            # chance of object not showing
             if self.random_placement is True:
                 if random.randint(1, 100) <= self.random_mult:
-                    continue
-                cube = cmds.polyCube(height=0.1,
-                                     width=0.1,
-                                     depth=0.1,
-                                     name="cube")[0]
-                cmds.xform(cube, translation=pos)
-                cube_names.append(cube)
+                    cmds.hide(cube)
+                    hidden_cubes.append(cube)
 
         grp_name = cmds.group(cube_names, name="cubes")
         self._make_child(grp_name)
