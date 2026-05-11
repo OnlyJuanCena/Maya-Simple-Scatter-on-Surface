@@ -63,7 +63,6 @@ class SimpleScatter():
             cube_names.append(cube)
 
         grp_name = cmds.group(cube_names, name="cubes")
-        self._make_child(grp_name)
         return grp_name
 
     def get_objects(self):
@@ -77,17 +76,15 @@ class SimpleScatter():
         print(f"Base object: {self.base_object}")
 
     def get_points(self):
-        """Returns a list containing the positions of
-        every point in the given object
+        """Returns list containing the positions of
+        every point in the given object.
 
         Returns:
-            list: Vertecies from object.
+            list: Vertex positions from object.
         """
 
-        self.base_object = self.base_object
-        print(f"{self.base_object}")
         object_verts = f"{self.base_object}.vtx[*]"
-        print(f"{object_verts}")
+        print(f"Object verts: {object_verts}")
 
         selected_verts = cmds.ls(object_verts, flatten=True)
         print(selected_verts)
