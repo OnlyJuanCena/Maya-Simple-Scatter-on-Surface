@@ -63,10 +63,10 @@ class SimpleScatter():
     base_object = ""
     random_placement = True
     random_mult = 70
+    random_density = None
 
     def scatter_cubes(self):
         cube_names = []
-        hidden_cubes = []
 
         for pos in self.get_points():
             cube = cmds.polyCube(height=0.1,
@@ -75,15 +75,21 @@ class SimpleScatter():
                                  name="cube")[0]
             cmds.xform(cube, translation=pos)
             cube_names.append(cube)
-            # chance of object not showing
-            if self.random_placement is True:
-                if random.randint(1, 100) <= self.random_mult:
-                    cmds.hide(cube)
-                    hidden_cubes.append(cube)
 
         grp_name = cmds.group(cube_names, name="cubes")
+
+        for cube in grp_name:
+            self.apply_random_visibility(cube)
+
         self._make_child(grp_name)
         return grp_name
+
+    def apply_random_visibility(self, obj):
+        hidden_obj = []
+        if self.random_placement is True:
+            if random.randint(1, 100) <= self.random_mult:
+                cmds.hide(obj)
+                hidden_obj.append(obj)
 
     def get_objects(self):
         objects = cmds.ls(geometry=True)
