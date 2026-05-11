@@ -73,6 +73,7 @@ class SimpleScatter():
             cube_names.append(cube)
 
         grp_name = cmds.group(cube_names, name="cubes")
+        self._make_child(grp_name)
         return grp_name
 
     def get_objects(self):
@@ -118,7 +119,6 @@ class SimpleScatter():
         cmds.xform(obj, pivots=[0, 0, 0])
 
     # create group of duplicate meshes and place on points
-    # use dictionaries to associate mesh with point
     # hide duplicate meshes at random based on density slider
 
     # create group of hidden objects that slider controls
