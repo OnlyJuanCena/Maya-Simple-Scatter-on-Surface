@@ -24,9 +24,18 @@ class ScatterWin(QtWidgets.QDialog):
     def _connect_signals(self):
         self.scatter_cubes_btn.clicked.connect(
             self.scatter.scatter_cubes)
+
+        self.refresh_list_btn.clicked.connect(
+            self._refresh_obj_select_combox)
+        self.scatter.set_base_object(self.obj_select_combox.currentText())
         self.obj_select_combox.currentTextChanged.connect(
             self.scatter.set_base_object
         )
+
+    def _refresh_obj_select_combox(self):
+        self.scatter._refresh_list()
+        self.obj_select_combox.clear()
+        self.obj_select_combox.addItems(self.scatter.obj_list)
 
     def _mk_main_layout(self):
         self.main_layout = QtWidgets.QVBoxLayout()
@@ -37,9 +46,10 @@ class ScatterWin(QtWidgets.QDialog):
     def _mk_combox_layout(self):
         self.obj_select_combox = QtWidgets.QComboBox()
         self.obj_select_combox.addItems(self.scatter.obj_list)
-        if self.obj_select_combox.count() > 0:
-            self.scatter.set_base_object(self.obj_select_combox.currentText())
+
+        self.refresh_list_btn = QtWidgets.QPushButton("Refresh List")
         self.main_layout.addWidget(self.obj_select_combox)
+        self.main_layout.addWidget(self.refresh_list_btn)
 
     def _mk_buttons_layout(self):
         self.scatter_cubes_btn = QtWidgets.QPushButton("Scatter Cubes")
@@ -82,15 +92,10 @@ class SimpleScatter():
         Returns:
             list: Vertex positions from object.
         """
-
-        object_verts = f"{self.base_object}.vtx[*]"
-        print(f"Object verts: {object_verts}")
-
-        selected_verts = cmds.ls(object_verts, flatten=True)
-        print(selected_verts)
-
         vert_positions = []
-        for vert in selected_verts:
+        object_verts = f"{self.base_object}.vtx[*]"
+        verts_list = cmds.ls(object_verts, flatten=True)
+        for vert in verts_list:
             pos = tuple(cmds.xform(vert,
                                    query=True,
                                    worldSpace=True,
@@ -99,8 +104,11 @@ class SimpleScatter():
 
         return vert_positions
 
+    def _refresh_list(self):
+        self.obj_list = self.get_objects()
+
     def _make_child(self, obj):
-        cmds.setParent(obj, self.base_object)
+        cmds.parent(obj, self.base_object)
 
     def _freeze_transforms(self, obj):
         cmds.makeIdentity(obj, apply=True, translate=True, rotate=True,
