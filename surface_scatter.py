@@ -2,6 +2,7 @@ import maya.cmds as cmds
 import maya.OpenMayaUI as omui
 from PySide6 import QtWidgets, QtCore
 from shiboken6 import wrapInstance
+import random
 
 
 def get_maya_main_win():
@@ -60,17 +61,23 @@ class SimpleScatter():
 
     obj_list = ""
     base_object = ""
+    random_placement = True
+    random_mult = 70
 
     def scatter_cubes(self):
         cube_names = []
 
         for pos in self.get_points():
-            cube = cmds.polyCube(height=0.1,
-                                 width=0.1,
-                                 depth=0.1,
-                                 name="cube")[0]
-            cmds.xform(cube, translation=pos)
-            cube_names.append(cube)
+            # chance of object not generating
+            if self.random_placement is True:
+                if random.randint(1, 100) <= self.random_mult:
+                    continue
+                cube = cmds.polyCube(height=0.1,
+                                     width=0.1,
+                                     depth=0.1,
+                                     name="cube")[0]
+                cmds.xform(cube, translation=pos)
+                cube_names.append(cube)
 
         grp_name = cmds.group(cube_names, name="cubes")
         self._make_child(grp_name)
