@@ -15,7 +15,7 @@ class ScatterWin(QtWidgets.QDialog):
     def __init__(self):
         super().__init__(parent=get_maya_main_win())
         self.scatter = SimpleScatter()
-        # put self.obj_list = get_objects here
+        self.scatter.obj_list = self.scatter.get_objects()
         self.setWindowTitle("Simple Scatter")
         self.setWindowFlags(QtCore.Qt.Tool)
         self._mk_main_layout()
@@ -25,7 +25,7 @@ class ScatterWin(QtWidgets.QDialog):
         self.scatter_cubes_btn.clicked.connect(
             self.scatter.scatter_cubes)
         self.obj_select_combox.currentTextChanged.connect(
-            self.scatter.base_object
+            self.scatter.set_base_object
         )
 
     def _mk_main_layout(self):
@@ -36,7 +36,9 @@ class ScatterWin(QtWidgets.QDialog):
 
     def _mk_combox_layout(self):
         self.obj_select_combox = QtWidgets.QComboBox()
-        self.obj_select_combox.addItems(self.scatter.get_objects())
+        self.obj_select_combox.addItems(self.scatter.obj_list)
+        if self.obj_select_combox.count() > 0:
+            self.scatter.set_base_object(self.obj_select_combox.currentText())
         self.main_layout.addWidget(self.obj_select_combox)
 
     def _mk_buttons_layout(self):
@@ -66,13 +68,13 @@ class SimpleScatter():
 
     def get_objects(self):
         objects = cmds.ls(geometry=True)
+        print(f"Objects in scene: {objects}")
         return objects
 
-    def get_base_object(self):
-        if self.base_object == "":
-            return self.get_objects()[0]
-        else:
-            return self.base_object
+    def set_base_object(self, obj_name):
+        """Setter for base_object used by the UI combo box signal."""
+        self.base_object = obj_name
+        print(f"Base object: {self.base_object}")
 
     def get_points(self):
         """Returns a list containing the positions of
@@ -82,7 +84,7 @@ class SimpleScatter():
             list: Vertecies from object.
         """
 
-        self.base_object = self.get_base_object()
+        self.base_object = self.base_object
         print(f"{self.base_object}")
         object_verts = f"{self.base_object}.vtx[*]"
         print(f"{object_verts}")
@@ -101,7 +103,7 @@ class SimpleScatter():
         return vert_positions
 
     def _make_child(self, obj):
-        cmds.setParent(obj, self.get_base_object())
+        cmds.setParent(obj, self.base_object)
 
     def _freeze_transforms(self, obj):
         cmds.makeIdentity(obj, apply=True, translate=True, rotate=True,
