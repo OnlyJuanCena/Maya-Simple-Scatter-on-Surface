@@ -93,44 +93,42 @@ class ScatterWin(QtWidgets.QDialog):
 
 class SimpleScatter():
 
-    obj_list = ""
+    obj_list = []
     base_object = ""
     random_placement = True
     random_scarcity = 25
-    hidden_list = []
+    current_scattered_list = []
 
     def scatter_cubes(self):
-        cube_names = []
-
+        self.current_scattered_list = []
         for pos in self.get_points():
             cube = cmds.polyCube(height=0.1,
                                  width=0.1,
                                  depth=0.1,
                                  name="cube")[0]
             cmds.xform(cube, translation=pos)
-            cube_names.append(cube)
+            self.current_scattered_list.append(cube)
 
-        self.apply_random_visibility(cube_names)
+        self.apply_random_visibility()
 
-        grp_name = cmds.group(cube_names, name="cubes")
+        grp_name = cmds.group(self.current_scattered_list, name="cubes")
 
         self._make_child(grp_name)
         return grp_name
 
-    def apply_random_visibility(self, objects):
+    def apply_random_visibility(self):
         if self.random_placement is True:
             scarcity = self.random_scarcity / 100
             print(f"scarcity: {scarcity}")
 
-            hidden_count = round(len(objects) * scarcity)
-            hidden_count = max(0, min(hidden_count, len(objects)))
+            scattered_count = len(self.current_scattered_list)
+            hidden_count = round(scattered_count * scarcity)
 
-            self.hidden_list = (
-                random.sample(objects, hidden_count)
-                if hidden_count else []
-            )
+            hidden_list = random.sample(self.current_scattered_list,
+                                        hidden_count)
+            print(hidden_list)
 
-            for obj in self.hidden_list:
+            for obj in hidden_list:
                 cmds.hide(obj)
 
     def get_objects(self):
