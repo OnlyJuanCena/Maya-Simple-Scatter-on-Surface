@@ -16,7 +16,7 @@ class ScatterWin(QtWidgets.QDialog):
     def __init__(self):
         super().__init__(parent=get_maya_main_win())
         self.scatter = SimpleScatter()
-        self.scatter.obj_list = self.scatter._get_objects()
+        self.scatter.obj_list = self.scatter.get_objects()
         self.setWindowTitle("Simple Scatter")
         self.setWindowFlags(QtCore.Qt.Tool)
         self._mk_main_layout()
@@ -40,9 +40,9 @@ class ScatterWin(QtWidgets.QDialog):
 
         self.refresh_list_btn.clicked.connect(
             self._refresh_obj_select_combox)
-        self.scatter._set_base_object(self.obj_select_combox.currentText())
+        self.scatter.set_base_object(self.obj_select_combox.currentText())
         self.obj_select_combox.currentTextChanged.connect(
-            self.scatter._set_base_object
+            self.scatter.set_base_object
         )
 
         self.scarcity_slider.valueChanged.connect(
@@ -98,7 +98,8 @@ class ScatterWin(QtWidgets.QDialog):
         self.main_layout.addLayout(self.scarcity_layout)
 
     def _mk_buttons_layout(self):
-        self.controls_lbl = QtWidgets.QLabel("Scatter Options")
+        self.controls_lbl = QtWidgets.QLabel(
+            "Scatter Options (Select object to scatter in viewport)")
         self.controls_lbl.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.scatter_cubes_btn = QtWidgets.QPushButton("Scatter Cubes")
         self.scatter_on_surface_btn = QtWidgets.QPushButton("Scatter Selection")
@@ -129,7 +130,7 @@ class SimpleScatter():
 
     def scatter_cubes(self):
         self.current_scattered_list = []
-        for pos in self._get_points():
+        for pos in self.get_points():
             cube = cmds.polyCube(height=0.1,
                                  width=0.1,
                                  depth=0.1,
@@ -142,18 +143,28 @@ class SimpleScatter():
         return grp_name
 
     def scatter_object(self):
-        selected_object = cmds.ls(selection=True)
-        print(selected_object)
+        self.current_scattered_list = []
 
-    def _get_objects(self):
+        selected_object = cmds.ls(selection=True)[0]
+        print(selected_object)
+        for pos in self.get_points():
+            dupe = cmds.duplicate(selected_object)
+            cmds.xform(dupe, translation=pos)
+            self.current_scattered_list.append(dupe)
+        self.apply_random_visibility()
+        grp_name = cmds.group(self.current_scattered_list, "objects")
+        self._make_child(grp_name)
+        return grp_name
+
+    def get_objects(self):
         objects = cmds.ls(geometry=True)
         return objects
 
-    def _set_base_object(self, obj_name):
+    def set_base_object(self, obj_name):
         """Setter for base_object used by the UI combo box signal."""
         self.base_object = obj_name
 
-    def _get_points(self):
+    def get_points(self):
         """Returns list containing the positions of
         every point in the given object.
 
@@ -173,7 +184,7 @@ class SimpleScatter():
         return vert_positions
 
     def _refresh_list(self):
-        self.obj_list = self._get_objects()
+        self.obj_list = self.get_objects()
 
     def _make_child(self, obj):
         cmds.parent(obj, self.base_object)
