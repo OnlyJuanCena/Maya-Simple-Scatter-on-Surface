@@ -26,9 +26,9 @@ class ScatterWin(QtWidgets.QDialog):
         self.scatter.random_scarcity = self.scarcity_slider.value()
         self.scatter.scatter_cubes()
 
-    def scatter_on_surface(self):
-        # TODO: Impliment function
-        pass
+    def generate_scatter(self):
+        self.scatter.random_scarcity = self.scarcity_slider.value()
+        self.scatter.scatter_object()
 
     def _update_scarcity(self):
         self.scatter.random_scarcity = self.scarcity_slider.value()
@@ -36,6 +36,7 @@ class ScatterWin(QtWidgets.QDialog):
 
     def _connect_signals(self):
         self.scatter_cubes_btn.clicked.connect(self.generate_cubes)
+        self.scatter_on_surface_btn.clicked.connect(self.generate_scatter)
 
         self.refresh_list_btn.clicked.connect(
             self._refresh_obj_select_combox)
@@ -97,8 +98,14 @@ class ScatterWin(QtWidgets.QDialog):
         self.main_layout.addLayout(self.scarcity_layout)
 
     def _mk_buttons_layout(self):
+        self.controls_lbl = QtWidgets.QLabel("Scatter Options")
+        self.controls_lbl.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.scatter_cubes_btn = QtWidgets.QPushButton("Scatter Cubes")
+        self.scatter_on_surface_btn = QtWidgets.QPushButton("Scatter Selection")
+
+        self.main_layout.addWidget(self.controls_lbl)
         self.main_layout.addWidget(self.scatter_cubes_btn)
+        self.main_layout.addWidget(self.scatter_on_surface_btn)
 
 
 class SimpleScatter():
@@ -129,13 +136,14 @@ class SimpleScatter():
                                  name="cube")[0]
             cmds.xform(cube, translation=pos)
             self.current_scattered_list.append(cube)
-
         self.apply_random_visibility()
-
         grp_name = cmds.group(self.current_scattered_list, name="cubes")
-
         self._make_child(grp_name)
         return grp_name
+
+    def scatter_object(self):
+        selected_object = cmds.ls(selection=True)
+        print(selected_object)
 
     def _get_objects(self):
         objects = cmds.ls(geometry=True)
