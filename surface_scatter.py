@@ -26,6 +26,10 @@ class ScatterWin(QtWidgets.QDialog):
         self.scatter.random_scarcity = self.scarcity_slider.value()
         self.scatter.scatter_cubes()
 
+    def _update_scarcity(self):
+        self.scatter.random_scarcity = self.scarcity_slider.value()
+        self.scatter._update_visibility()
+
     def _connect_signals(self):
         self.scatter_cubes_btn.clicked.connect(self.generate_cubes)
 
@@ -35,7 +39,8 @@ class ScatterWin(QtWidgets.QDialog):
         self.obj_select_combox.currentTextChanged.connect(
             self.scatter.set_base_object
         )
-
+        self.scarcity_slider.valueChanged.connect(
+            self._update_scarcity)
         self.scarcity_slider.valueChanged.connect(
             self.scarcity_slider_number.setValue)
         self.scarcity_slider_number.valueChanged.connect(
@@ -119,7 +124,7 @@ class SimpleScatter():
     def apply_random_visibility(self):
         if self.random_placement is True:
             scarcity = self.random_scarcity / 100
-            print(f"scarcity: {scarcity}")
+            print(f"Scarcity: {scarcity}")
 
             scattered_count = len(self.current_scattered_list)
             hidden_count = round(scattered_count * scarcity)
@@ -130,6 +135,11 @@ class SimpleScatter():
 
             for obj in hidden_list:
                 cmds.hide(obj)
+
+    def _update_visibility(self):
+        if self.current_scattered_list:
+            cmds.showHidden(self.current_scattered_list)
+            self.apply_random_visibility()
 
     def get_objects(self):
         objects = cmds.ls(geometry=True)
