@@ -23,7 +23,7 @@ class ScatterWin(QtWidgets.QDialog):
         self._connect_signals()
 
     def generate_cubes(self):
-        self.scatter.random_density = self.density_slider.value()
+        self.scatter.random_scarcity = self.scarcity_slider.value()
         self.scatter.scatter_cubes()
 
     def _connect_signals(self):
@@ -36,10 +36,10 @@ class ScatterWin(QtWidgets.QDialog):
             self.scatter.set_base_object
         )
 
-        self.density_slider.valueChanged.connect(
-            self.density_slider_number.setValue)
-        self.density_slider_number.valueChanged.connect(
-            self.density_slider.setValue)
+        self.scarcity_slider.valueChanged.connect(
+            self.scarcity_slider_number.setValue)
+        self.scarcity_slider_number.valueChanged.connect(
+            self.scarcity_slider.setValue)
 
     def _refresh_obj_select_combox(self):
         self.scatter._refresh_list()
@@ -50,7 +50,7 @@ class ScatterWin(QtWidgets.QDialog):
         self.main_layout = QtWidgets.QVBoxLayout()
         self._mk_combox_layout()
         self._mk_buttons_layout()
-        self._mk_density_layout()
+        self._mk_scarcity_layout()
         self.setLayout(self.main_layout)
 
     def _mk_combox_layout(self):
@@ -67,24 +67,24 @@ class ScatterWin(QtWidgets.QDialog):
         self.combox_layout.addWidget(self.refresh_list_btn)
         self.main_layout.addLayout(self.combox_layout)
 
-    def _mk_density_layout(self):
-        self.density_layout = QtWidgets.QHBoxLayout()
-        self.density_slider = QtWidgets.QSlider()
-        self.density_slider_lbl = QtWidgets.QLabel("Density")
-        self.density_slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
-        self.density_slider.setValue(50)
-        self.density_slider.setMaximum(100)
-        self.density_slider.setMinimum(0)
+    def _mk_scarcity_layout(self):
+        self.scarcity_layout = QtWidgets.QHBoxLayout()
+        self.scarcity_slider = QtWidgets.QSlider()
+        self.scarcity_slider_lbl = QtWidgets.QLabel("Scarcity")
+        self.scarcity_slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.scarcity_slider.setValue(50)
+        self.scarcity_slider.setMaximum(100)
+        self.scarcity_slider.setMinimum(0)
 
-        self.density_slider_number = QtWidgets.QSpinBox()
-        self.density_slider_number.setValue(50)
-        self.density_slider_number.setMaximum(100)
-        self.density_slider_number.setSuffix("%")
+        self.scarcity_slider_number = QtWidgets.QSpinBox()
+        self.scarcity_slider_number.setValue(50)
+        self.scarcity_slider_number.setMaximum(100)
+        self.scarcity_slider_number.setSuffix("%")
 
-        self.density_layout.addWidget(self.density_slider_lbl)
-        self.density_layout.addWidget(self.density_slider)
-        self.density_layout.addWidget(self.density_slider_number)
-        self.main_layout.addLayout(self.density_layout)
+        self.scarcity_layout.addWidget(self.scarcity_slider_lbl)
+        self.scarcity_layout.addWidget(self.scarcity_slider)
+        self.scarcity_layout.addWidget(self.scarcity_slider_number)
+        self.main_layout.addLayout(self.scarcity_layout)
 
     def _mk_buttons_layout(self):
         self.scatter_cubes_btn = QtWidgets.QPushButton("Scatter Cubes")
@@ -96,7 +96,7 @@ class SimpleScatter():
     obj_list = ""
     base_object = ""
     random_placement = True
-    random_density = 25
+    random_scarcity = 25
     hidden_list = []
 
     def scatter_cubes(self):
@@ -119,10 +119,10 @@ class SimpleScatter():
 
     def apply_random_visibility(self, objects):
         if self.random_placement is True:
-            density = self.random_density / 100
-            print(f"Density: {density}")
+            scarcity = self.random_scarcity / 100
+            print(f"scarcity: {scarcity}")
 
-            hidden_count = round(len(objects) * density)
+            hidden_count = round(len(objects) * scarcity)
             hidden_count = max(0, min(hidden_count, len(objects)))
 
             self.hidden_list = (
@@ -169,7 +169,7 @@ class SimpleScatter():
         cmds.parent(obj, self.base_object)
 
     # create group of duplicate meshes and place on points
-    # hide duplicate meshes at random based on density slider
+    # hide duplicate meshes at random based on scarcity slider
 
     # create group of hidden objects that slider controls
     # allow user to delete hidden objects
