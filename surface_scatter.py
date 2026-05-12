@@ -33,6 +33,11 @@ class ScatterWin(QtWidgets.QDialog):
             self.scatter.set_base_object
         )
 
+        self.density_slider.valueChanged.connect(
+            self.density_slider_number.setValue)
+        self.density_slider_number.valueChanged.connect(
+            self.density_slider.setValue)
+
     def _refresh_obj_select_combox(self):
         self.scatter._refresh_list()
         self.obj_select_combox.clear()
