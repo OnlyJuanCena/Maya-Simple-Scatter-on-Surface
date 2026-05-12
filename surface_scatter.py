@@ -69,6 +69,7 @@ class ScatterWin(QtWidgets.QDialog):
         self.density_slider = QtWidgets.QSlider()
         self.density_slider_lbl = QtWidgets.QLabel("Density")
         self.density_slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.density_slider.setValue(50)
         self.density_slider.setMaximum(100)
         self.density_slider.setMinimum(0)
 
