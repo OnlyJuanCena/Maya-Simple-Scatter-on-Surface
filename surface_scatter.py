@@ -102,7 +102,8 @@ class ScatterWin(QtWidgets.QDialog):
             "Scatter Options (Select object to scatter in viewport)")
         self.controls_lbl.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.scatter_cubes_btn = QtWidgets.QPushButton("Scatter Cubes")
-        self.scatter_on_surface_btn = QtWidgets.QPushButton("Scatter Selection")
+        self.scatter_on_surface_btn = QtWidgets.QPushButton(
+            "Scatter Selection")
 
         self.main_layout.addWidget(self.controls_lbl)
         self.main_layout.addWidget(self.scatter_cubes_btn)
@@ -146,13 +147,13 @@ class SimpleScatter():
         self.current_scattered_list = []
 
         selected_object = cmds.ls(selection=True)[0]
-        print(selected_object)
         for pos in self.get_points():
-            dupe = cmds.duplicate(selected_object)
+            dupe = cmds.duplicate(selected_object)[0]
             cmds.xform(dupe, translation=pos)
             self.current_scattered_list.append(dupe)
         self.apply_random_visibility()
-        grp_name = cmds.group(self.current_scattered_list, "objects")
+        grp_name = cmds.group(self.current_scattered_list,
+                              name=f"{selected_object}s")
         self._make_child(grp_name)
         return grp_name
 
