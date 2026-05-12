@@ -42,9 +42,14 @@ class ScatterWin(QtWidgets.QDialog):
         self.main_layout = QtWidgets.QVBoxLayout()
         self._mk_combox_layout()
         self._mk_buttons_layout()
+        self._mk_density_layout()
         self.setLayout(self.main_layout)
 
     def _mk_combox_layout(self):
+        self.combox_lbl = QtWidgets.QLabel("Base Object")
+        self.combox_lbl.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.main_layout.addWidget(self.combox_lbl)
+
         self.combox_layout = QtWidgets.QHBoxLayout()
         self.obj_select_combox = QtWidgets.QComboBox()
         self.obj_select_combox.addItems(self.scatter.obj_list)
@@ -55,11 +60,21 @@ class ScatterWin(QtWidgets.QDialog):
         self.main_layout.addLayout(self.combox_layout)
 
     def _mk_density_layout(self):
+        self.density_layout = QtWidgets.QHBoxLayout()
         self.density_slider = QtWidgets.QSlider()
         self.density_slider_lbl = QtWidgets.QLabel("Density")
-        self.density_slider.setMaximum(1)
+        self.density_slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.density_slider.setMaximum(100)
         self.density_slider.setMinimum(0)
-        self.density_slider.setSingleStep(0.01)
+
+        self.density_slider_number = QtWidgets.QSpinBox()
+        self.density_slider_number.setValue(50)
+        self.density_slider_number.setMaximum(100)
+
+        self.density_layout.addWidget(self.density_slider_lbl)
+        self.density_layout.addWidget(self.density_slider)
+        self.density_layout.addWidget(self.density_slider_number)
+        self.main_layout.addLayout(self.density_layout)
 
     def _mk_buttons_layout(self):
         self.scatter_cubes_btn = QtWidgets.QPushButton("Scatter Cubes")
@@ -71,7 +86,7 @@ class SimpleScatter():
     obj_list = ""
     base_object = ""
     random_placement = True
-    random_density = 0.25
+    random_density = 25
     hidden_list = []
 
     def scatter_cubes(self):
@@ -94,7 +109,7 @@ class SimpleScatter():
 
     def apply_random_visibility(self, objects):
         if self.random_placement is True:
-            density = self.random_density
+            density = self.random_density / 100
 
             hidden_count = round(len(objects) * density)
             hidden_count = max(0, min(hidden_count, len(objects)))
