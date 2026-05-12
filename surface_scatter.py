@@ -22,9 +22,12 @@ class ScatterWin(QtWidgets.QDialog):
         self._mk_main_layout()
         self._connect_signals()
 
+    def generate_cubes(self):
+        self.scatter.random_density = self.density_slider.value()
+        self.scatter.scatter_cubes()
+
     def _connect_signals(self):
-        self.scatter_cubes_btn.clicked.connect(
-            self.scatter.scatter_cubes)
+        self.scatter_cubes_btn.clicked.connect(self.generate_cubes)
 
         self.refresh_list_btn.clicked.connect(
             self._refresh_obj_select_combox)
@@ -117,6 +120,7 @@ class SimpleScatter():
     def apply_random_visibility(self, objects):
         if self.random_placement is True:
             density = self.random_density / 100
+            print(f"Density: {density}")
 
             hidden_count = round(len(objects) * density)
             hidden_count = max(0, min(hidden_count, len(objects)))
