@@ -197,5 +197,4 @@ class SimpleScatter():
 
 
 if __name__ == "__main__":
-    w = ScatterWin()
-    w.show()
+    pass
