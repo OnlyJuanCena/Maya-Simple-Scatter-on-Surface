@@ -105,22 +105,20 @@ class SimpleScatter():
 
     obj_list = []
     base_object = ""
-    random_placement = True
     random_scarcity = 25
     current_scattered_list = []
 
     def apply_random_visibility(self):
-        if self.random_placement is True:
-            scarcity = self.random_scarcity / 100
+        scarcity = self.random_scarcity / 100
 
-            scattered_count = len(self.current_scattered_list)
-            hidden_count = round(scattered_count * scarcity)
+        scattered_count = len(self.current_scattered_list)
+        hidden_count = round(scattered_count * scarcity)
 
-            hidden_list = random.sample(self.current_scattered_list,
-                                        hidden_count)
+        hidden_list = random.sample(self.current_scattered_list,
+                                    hidden_count)
 
-            for obj in hidden_list:
-                cmds.hide(obj)
+        for obj in hidden_list:
+            cmds.hide(obj)
 
     def scatter_cubes(self):
         self.current_scattered_list = []
