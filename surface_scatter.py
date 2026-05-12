@@ -70,6 +70,7 @@ class ScatterWin(QtWidgets.QDialog):
         self.density_slider_number = QtWidgets.QSpinBox()
         self.density_slider_number.setValue(50)
         self.density_slider_number.setMaximum(100)
+        self.density_slider_number.setSuffix("%")
 
         self.density_layout.addWidget(self.density_slider_lbl)
         self.density_layout.addWidget(self.density_slider)
