@@ -112,14 +112,12 @@ class SimpleScatter():
     def apply_random_visibility(self):
         if self.random_placement is True:
             scarcity = self.random_scarcity / 100
-            print(f"Scarcity: {scarcity}")
 
             scattered_count = len(self.current_scattered_list)
             hidden_count = round(scattered_count * scarcity)
 
             hidden_list = random.sample(self.current_scattered_list,
                                         hidden_count)
-            print(hidden_list)
 
             for obj in hidden_list:
                 cmds.hide(obj)
@@ -143,13 +141,11 @@ class SimpleScatter():
 
     def _get_objects(self):
         objects = cmds.ls(geometry=True)
-        print(f"Objects in scene: {objects}")
         return objects
 
     def _set_base_object(self, obj_name):
         """Setter for base_object used by the UI combo box signal."""
         self.base_object = obj_name
-        print(f"Base object: {self.base_object}")
 
     def _get_points(self):
         """Returns list containing the positions of
@@ -180,12 +176,6 @@ class SimpleScatter():
         if self.current_scattered_list:
             cmds.showHidden(self.current_scattered_list)
             self.apply_random_visibility()
-
-    # create group of duplicate meshes and place on points
-    # hide duplicate meshes at random based on scarcity slider
-
-    # create group of hidden objects that slider controls
-    # allow user to delete hidden objects
 
 
 if __name__ == "__main__":
